@@ -1,7 +1,18 @@
 {
-  "generated_at": "2026-06-25T17:30:03.925357Z",
+  "generated_at": "2026-06-25T19:27:10.190673Z",
   "total": 72,
   "fixtures": [
+    {
+      "id": 1489410,
+      "date": "2026-06-25T20:00:00+00:00",
+      "status": "NS",
+      "round": "Group Stage - 3",
+      "group": "Group E",
+      "home": "Ecuador",
+      "away": "Germany",
+      "goalsH": null,
+      "goalsA": null
+    },
     {
       "id": 1489369,
       "date": "2026-06-11T19:00:00+00:00",
@@ -595,17 +606,6 @@
       "away": "South Korea",
       "goalsH": 1,
       "goalsA": 0
-    },
-    {
-      "id": 1489410,
-      "date": "2026-06-25T20:00:00+00:00",
-      "status": "NS",
-      "round": "Group Stage - 3",
-      "group": "Group E",
-      "home": "Ecuador",
-      "away": "Germany",
-      "goalsH": null,
-      "goalsA": null
     },
     {
       "id": 1489409,
