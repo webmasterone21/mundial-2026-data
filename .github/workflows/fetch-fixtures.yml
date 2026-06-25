@@ -1,0 +1,174 @@
+name: Fetch Mundial 2026 Fixtures
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v5
+
+      - name: Fetch standings + fixtures desde API-Football
+        env:
+          API_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+        run: |
+          if [ -z "$API_KEY" ]; then
+            echo "ERROR: API_FOOTBALL_KEY secret no configurado"
+            exit 1
+          fi
+
+          curl -s \
+            -H "x-apisports-key: $API_KEY" \
+            "https://v3.football.api-sports.io/standings?league=1&season=2026" \
+            -o data/standings_raw.json
+
+          curl -s \
+            -H "x-apisports-key: $API_KEY" \
+            "https://v3.football.api-sports.io/fixtures?league=1&season=2026" \
+            -o data/fixtures_raw.json
+
+          echo "Datos descargados"
+
+      - name: Procesar y generar fixtures.json
+        run: |
+          python3 << 'EOF'
+          import json, datetime
+
+          # ── Grupos oficiales FIFA completos (fallback cuando API devuelve "Group Stage") ──
+          # Fuente: sorteo oficial FIFA Mundial 2026
+          GRUPOS_FIFA = {
+              "Mexico":               "Group A",
+              "South Africa":         "Group A",
+              "South Korea":          "Group A",
+              "Ecuador":              "Group A",
+              "Canada":               "Group B",
+              "Qatar":                "Group B",
+              "Switzerland":          "Group B",
+              "Sweden":               "Group B",
+              "Brazil":               "Group C",
+              "Morocco":              "Group C",
+              "Croatia":              "Group C",
+              "Haiti":                "Group C",
+              "Australia":            "Group D",
+              "USA":                  "Group D",
+              "Türkiye":              "Group D",
+              "Senegal":              "Group D",
+              "Germany":              "Group E",
+              "Ivory Coast":          "Group E",
+              "Curaçao":              "Group E",
+              "Belgium":              "Group E",
+              "Japan":                "Group F",
+              "Netherlands":          "Group F",
+              "Tunisia":              "Group F",
+              "Algeria":              "Group F",
+              "Iran":                 "Group G",
+              "Egypt":                "Group G",
+              "New Zealand":          "Group G",
+              "Paraguay":             "Group G",
+              "Saudi Arabia":         "Group H",
+              "Spain":                "Group H",
+              "Uruguay":              "Group H",
+              "Scotland":             "Group H",
+              "France":               "Group I",
+              "Iraq":                 "Group I",
+              "Norway":               "Group I",
+              "Bosnia & Herzegovina": "Group I",
+              "Argentina":            "Group J",
+              "Austria":              "Group J",
+              "Jordan":               "Group J",
+              "Cape Verde Islands":   "Group J",
+              "Colombia":             "Group K",
+              "Portugal":             "Group K",
+              "Uzbekistan":           "Group K",
+              "Congo DR":             "Group K",
+              "England":              "Group L",
+              "Ghana":                "Group L",
+              "Panama":               "Group L",
+              "Czechia":              "Group L",
+          }
+
+          # ── Leer standings para complementar con datos de la API ──
+          standings_raw = json.load(open('data/standings_raw.json'))
+          standings_data = standings_raw.get('response', [])
+
+          team_to_group = dict(GRUPOS_FIFA)  # empieza con el fallback completo
+
+          if standings_data:
+              league_standings = standings_data[0].get('league', {}).get('standings', [])
+              for group_list in league_standings:
+                  for row in group_list:
+                      team_name = row.get('team', {}).get('name', '')
+                      group     = row.get('group', '')
+                      # Solo sobreescribir si la API trae un grupo real (no "Group Stage")
+                      if team_name and group and group != 'Group Stage':
+                          team_to_group[team_name] = group
+
+          print(f'Mapa equipo-grupo: {len(team_to_group)} equipos')
+
+          # ── Leer fixtures ──
+          fixtures_raw = json.load(open('data/fixtures_raw.json'))
+          fixtures = fixtures_raw.get('response', [])
+
+          group_fixtures = [
+              f for f in fixtures
+              if 'Group Stage' in (f.get('league', {}).get('round') or '')
+          ]
+
+          compacto = []
+          sin_grupo = []
+          for f in group_fixtures:
+              home = f['teams']['home']['name']
+              away = f['teams']['away']['name']
+
+              group = (
+                  (f['league'].get('group') or '') if f['league'].get('group') != 'Group Stage' else ''
+              ) or team_to_group.get(home) or team_to_group.get(away) or ''
+
+              if not group or group == 'Group Stage':
+                  sin_grupo.append(f'{home} vs {away}')
+
+              compacto.append({
+                  'id':     f['fixture']['id'],
+                  'date':   f['fixture']['date'],
+                  'status': f['fixture']['status']['short'],
+                  'round':  f['league']['round'],
+                  'group':  group,
+                  'home':   home,
+                  'away':   away,
+                  'goalsH': f['goals']['home'],
+                  'goalsA': f['goals']['away'],
+              })
+
+          output = {
+              'generated_at': datetime.datetime.utcnow().isoformat() + 'Z',
+              'total': len(compacto),
+              'fixtures': compacto,
+          }
+
+          json.dump(output, open('data/fixtures.json', 'w'), ensure_ascii=False, indent=2)
+
+          resueltos = len(compacto) - len(sin_grupo)
+          print(f'{resueltos}/{len(compacto)} fixtures con grupo resuelto')
+          if sin_grupo:
+              print(f'Sin resolver: {sin_grupo}')
+          EOF
+
+      - name: Commit y push si hay cambios
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add data/fixtures.json data/fixtures_raw.json data/standings_raw.json
+
+          if git diff --staged --quiet; then
+            echo "Sin cambios."
+          else
+            TIMESTAMP=$(date -u '+%Y-%m-%d %H:%M UTC')
+            git commit -m "data: fixtures actualizados $TIMESTAMP"
+            git push
+          fi
