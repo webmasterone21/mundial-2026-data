@@ -1,0 +1,124 @@
+name: Fetch Mundial 2026 Fixtures
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Fetch standings + fixtures desde API-Football
+        env:
+          API_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+        run: |
+          if [ -z "$API_KEY" ]; then
+            echo "ERROR: API_FOOTBALL_KEY secret no configurado"
+            exit 1
+          fi
+
+          # Standings (trae posiciones por grupo — fuente principal)
+          curl -s \
+            -H "x-apisports-key: $API_KEY" \
+            "https://v3.football.api-sports.io/standings?league=1&season=2026" \
+            -o data/standings_raw.json
+
+          # Fixtures (respaldo para goles partido a partido)
+          curl -s \
+            -H "x-apisports-key: $API_KEY" \
+            "https://v3.football.api-sports.io/fixtures?league=1&season=2026" \
+            -o data/fixtures_raw.json
+
+          echo "✓ Datos descargados"
+
+      - name: Procesar y generar fixtures.json
+        run: |
+          python3 << 'EOF'
+          import json, datetime, re
+
+          # ── Leer standings para obtener grupo de cada equipo ──
+          standings_raw = json.load(open('data/standings_raw.json'))
+          # standings_raw.response[0].league.standings = [ [grupo_A...], [grupo_B...], ... ]
+          standings_data = standings_raw.get('response', [])
+
+          # Mapa equipo → grupo: { "Mexico": "Group A", ... }
+          team_to_group = {}
+          if standings_data:
+              league_standings = standings_data[0].get('league', {}).get('standings', [])
+              for group_list in league_standings:
+                  for row in group_list:
+                      team_name = row.get('team', {}).get('name', '')
+                      group     = row.get('group', '')   # "Group A", "Group B", ...
+                      if team_name and group:
+                          team_to_group[team_name] = group
+
+          print(f'✓ Mapa equipo→grupo: {len(team_to_group)} equipos')
+
+          # ── Leer fixtures ──
+          fixtures_raw = json.load(open('data/fixtures_raw.json'))
+          fixtures = fixtures_raw.get('response', [])
+
+          # Solo fase de grupos
+          group_fixtures = [
+              f for f in fixtures
+              if 'Group Stage' in (f.get('league', {}).get('round') or '')
+          ]
+
+          # Construir JSON compacto con grupo resuelto desde standings
+          compacto = []
+          for f in group_fixtures:
+              home = f['teams']['home']['name']
+              away = f['teams']['away']['name']
+
+              # Intentar obtener grupo desde standings; si no, desde el campo directo
+              group = (
+                  f['league'].get('group') or
+                  team_to_group.get(home) or
+                  team_to_group.get(away) or
+                  ''
+              )
+
+              compacto.append({
+                  'id':     f['fixture']['id'],
+                  'date':   f['fixture']['date'],
+                  'status': f['fixture']['status']['short'],
+                  'round':  f['league']['round'],
+                  'group':  group,
+                  'home':   home,
+                  'away':   away,
+                  'goalsH': f['goals']['home'],
+                  'goalsA': f['goals']['away'],
+              })
+
+          output = {
+              'generated_at': datetime.datetime.utcnow().isoformat() + 'Z',
+              'total': len(compacto),
+              'fixtures': compacto,
+          }
+
+          json.dump(output, open('data/fixtures.json', 'w'), ensure_ascii=False, indent=2)
+
+          # Resumen
+          grupos_ok = [f for f in compacto if f['group']]
+          print(f'✓ {len(compacto)} partidos totales, {len(grupos_ok)} con grupo resuelto')
+          EOF
+
+      - name: Commit y push si hay cambios
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add data/fixtures.json data/fixtures_raw.json data/standings_raw.json
+
+          if git diff --staged --quiet; then
+            echo "Sin cambios, nada que commitear."
+          else
+            TIMESTAMP=$(date -u '+%Y-%m-%d %H:%M UTC')
+            git commit -m "data: fixtures actualizados $TIMESTAMP"
+            git push
+          fi
