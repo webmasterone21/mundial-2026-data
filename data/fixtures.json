@@ -1,29 +1,7 @@
 {
-  "generated_at": "2026-06-25T01:59:22.491551Z",
+  "generated_at": "2026-06-25T03:02:24.470470Z",
   "total": 72,
   "fixtures": [
-    {
-      "id": 1539010,
-      "date": "2026-06-25T01:00:00+00:00",
-      "status": "HT",
-      "round": "Group Stage - 3",
-      "group": "Group Stage",
-      "home": "Czechia",
-      "away": "Mexico",
-      "goalsH": 0,
-      "goalsA": 0
-    },
-    {
-      "id": 1489407,
-      "date": "2026-06-25T01:00:00+00:00",
-      "status": "HT",
-      "round": "Group Stage - 3",
-      "group": "Group A",
-      "home": "South Africa",
-      "away": "South Korea",
-      "goalsH": 0,
-      "goalsA": 0
-    },
     {
       "id": 1489369,
       "date": "2026-06-11T19:00:00+00:00",
@@ -595,6 +573,28 @@
       "away": "Brazil",
       "goalsH": 0,
       "goalsA": 3
+    },
+    {
+      "id": 1539010,
+      "date": "2026-06-25T01:00:00+00:00",
+      "status": "FT",
+      "round": "Group Stage - 3",
+      "group": "Group Stage",
+      "home": "Czechia",
+      "away": "Mexico",
+      "goalsH": 0,
+      "goalsA": 3
+    },
+    {
+      "id": 1489407,
+      "date": "2026-06-25T01:00:00+00:00",
+      "status": "FT",
+      "round": "Group Stage - 3",
+      "group": "Group A",
+      "home": "South Africa",
+      "away": "South Korea",
+      "goalsH": 1,
+      "goalsA": 0
     },
     {
       "id": 1489410,
