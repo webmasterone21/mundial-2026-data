@@ -1,18 +1,7 @@
 {
-  "generated_at": "2026-06-25T19:27:10.190673Z",
+  "generated_at": "2026-06-25T21:13:44.682895Z",
   "total": 72,
   "fixtures": [
-    {
-      "id": 1489410,
-      "date": "2026-06-25T20:00:00+00:00",
-      "status": "NS",
-      "round": "Group Stage - 3",
-      "group": "Group E",
-      "home": "Ecuador",
-      "away": "Germany",
-      "goalsH": null,
-      "goalsA": null
-    },
     {
       "id": 1489369,
       "date": "2026-06-11T19:00:00+00:00",
@@ -608,17 +597,6 @@
       "goalsA": 0
     },
     {
-      "id": 1489409,
-      "date": "2026-06-25T20:00:00+00:00",
-      "status": "NS",
-      "round": "Group Stage - 3",
-      "group": "Group E",
-      "home": "Curaçao",
-      "away": "Ivory Coast",
-      "goalsH": null,
-      "goalsA": null
-    },
-    {
       "id": 1539011,
       "date": "2026-06-25T23:00:00+00:00",
       "status": "NS",
@@ -793,6 +771,28 @@
       "away": "Argentina",
       "goalsH": null,
       "goalsA": null
+    },
+    {
+      "id": 1489410,
+      "date": "2026-06-25T20:00:00+00:00",
+      "status": "2H",
+      "round": "Group Stage - 3",
+      "group": "Group E",
+      "home": "Ecuador",
+      "away": "Germany",
+      "goalsH": 1,
+      "goalsA": 1
+    },
+    {
+      "id": 1489409,
+      "date": "2026-06-25T20:00:00+00:00",
+      "status": "2H",
+      "round": "Group Stage - 3",
+      "group": "Group E",
+      "home": "Curaçao",
+      "away": "Ivory Coast",
+      "goalsH": 0,
+      "goalsA": 1
     }
   ]
 }
