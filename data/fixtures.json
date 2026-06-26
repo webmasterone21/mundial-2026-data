@@ -1,29 +1,7 @@
 {
-  "generated_at": "2026-06-26T20:17:26.609428Z",
+  "generated_at": "2026-06-26T21:47:22.953824Z",
   "total": 72,
   "fixtures": [
-    {
-      "id": 1539074,
-      "date": "2026-06-26T19:00:00+00:00",
-      "status": "2H",
-      "round": "Group Stage - 3",
-      "group": "Group I",
-      "home": "Senegal",
-      "away": "Iraq",
-      "goalsH": 1,
-      "goalsA": 0
-    },
-    {
-      "id": 1489416,
-      "date": "2026-06-26T19:00:00+00:00",
-      "status": "2H",
-      "round": "Group Stage - 3",
-      "group": "Group I",
-      "home": "Norway",
-      "away": "France",
-      "goalsH": 1,
-      "goalsA": 3
-    },
     {
       "id": 1489369,
       "date": "2026-06-11T19:00:00+00:00",
@@ -683,6 +661,28 @@
       "away": "Australia",
       "goalsH": 0,
       "goalsA": 0
+    },
+    {
+      "id": 1539074,
+      "date": "2026-06-26T19:00:00+00:00",
+      "status": "FT",
+      "round": "Group Stage - 3",
+      "group": "Group I",
+      "home": "Senegal",
+      "away": "Iraq",
+      "goalsH": 5,
+      "goalsA": 0
+    },
+    {
+      "id": 1489416,
+      "date": "2026-06-26T19:00:00+00:00",
+      "status": "FT",
+      "round": "Group Stage - 3",
+      "group": "Group I",
+      "home": "Norway",
+      "away": "France",
+      "goalsH": 1,
+      "goalsA": 4
     },
     {
       "id": 1489417,
