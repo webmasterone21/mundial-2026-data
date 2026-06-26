@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-26T00:10:42.582334Z",
+  "generated_at": "2026-06-26T04:49:45.428085Z",
   "total": 72,
   "fixtures": [
     {
@@ -619,26 +619,48 @@
       "goalsA": 2
     },
     {
+      "id": 1539011,
+      "date": "2026-06-25T23:00:00+00:00",
+      "status": "FT",
+      "round": "Group Stage - 3",
+      "group": "Group F",
+      "home": "Japan",
+      "away": "Sweden",
+      "goalsH": 1,
+      "goalsA": 1
+    },
+    {
+      "id": 1489412,
+      "date": "2026-06-25T23:00:00+00:00",
+      "status": "FT",
+      "round": "Group Stage - 3",
+      "group": "Group F",
+      "home": "Tunisia",
+      "away": "Netherlands",
+      "goalsH": 1,
+      "goalsA": 3
+    },
+    {
       "id": 1539012,
       "date": "2026-06-26T02:00:00+00:00",
-      "status": "NS",
+      "status": "FT",
       "round": "Group Stage - 3",
       "group": "Group D",
       "home": "Türkiye",
       "away": "USA",
-      "goalsH": null,
-      "goalsA": null
+      "goalsH": 3,
+      "goalsA": 2
     },
     {
       "id": 1489411,
       "date": "2026-06-26T02:00:00+00:00",
-      "status": "NS",
+      "status": "FT",
       "round": "Group Stage - 3",
       "group": "Group D",
       "home": "Paraguay",
       "away": "Australia",
-      "goalsH": null,
-      "goalsA": null
+      "goalsH": 0,
+      "goalsA": 0
     },
     {
       "id": 1539074,
@@ -771,28 +793,6 @@
       "away": "Argentina",
       "goalsH": null,
       "goalsA": null
-    },
-    {
-      "id": 1539011,
-      "date": "2026-06-25T23:00:00+00:00",
-      "status": "2H",
-      "round": "Group Stage - 3",
-      "group": "Group F",
-      "home": "Japan",
-      "away": "Sweden",
-      "goalsH": 0,
-      "goalsA": 0
-    },
-    {
-      "id": 1489412,
-      "date": "2026-06-25T23:00:00+00:00",
-      "status": "2H",
-      "round": "Group Stage - 3",
-      "group": "Group F",
-      "home": "Tunisia",
-      "away": "Netherlands",
-      "goalsH": 0,
-      "goalsA": 2
     }
   ]
 }
