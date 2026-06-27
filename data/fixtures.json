@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-27T01:28:24.211100Z",
+  "generated_at": "2026-06-27T05:31:44.536959Z",
   "total": 72,
   "fixtures": [
     {
@@ -685,26 +685,48 @@
       "goalsA": 4
     },
     {
+      "id": 1489417,
+      "date": "2026-06-27T00:00:00+00:00",
+      "status": "FT",
+      "round": "Group Stage - 3",
+      "group": "Group H",
+      "home": "Uruguay",
+      "away": "Spain",
+      "goalsH": 0,
+      "goalsA": 1
+    },
+    {
+      "id": 1489413,
+      "date": "2026-06-27T00:00:00+00:00",
+      "status": "FT",
+      "round": "Group Stage - 3",
+      "group": "Group H",
+      "home": "Cape Verde Islands",
+      "away": "Saudi Arabia",
+      "goalsH": 0,
+      "goalsA": 0
+    },
+    {
       "id": 1489414,
       "date": "2026-06-27T03:00:00+00:00",
-      "status": "NS",
+      "status": "FT",
       "round": "Group Stage - 3",
       "group": "Group G",
       "home": "Egypt",
       "away": "Iran",
-      "goalsH": null,
-      "goalsA": null
+      "goalsH": 1,
+      "goalsA": 1
     },
     {
       "id": 1489415,
       "date": "2026-06-27T03:00:00+00:00",
-      "status": "NS",
+      "status": "FT",
       "round": "Group Stage - 3",
       "group": "Group G",
       "home": "New Zealand",
       "away": "Belgium",
-      "goalsH": null,
-      "goalsA": null
+      "goalsH": 1,
+      "goalsA": 5
     },
     {
       "id": 1489420,
@@ -771,28 +793,6 @@
       "away": "Argentina",
       "goalsH": null,
       "goalsA": null
-    },
-    {
-      "id": 1489417,
-      "date": "2026-06-27T00:00:00+00:00",
-      "status": "2H",
-      "round": "Group Stage - 3",
-      "group": "Group H",
-      "home": "Uruguay",
-      "away": "Spain",
-      "goalsH": 0,
-      "goalsA": 1
-    },
-    {
-      "id": 1489413,
-      "date": "2026-06-27T00:00:00+00:00",
-      "status": "2H",
-      "round": "Group Stage - 3",
-      "group": "Group H",
-      "home": "Cape Verde Islands",
-      "away": "Saudi Arabia",
-      "goalsH": 0,
-      "goalsA": 0
     }
   ]
 }
