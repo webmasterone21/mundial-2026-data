@@ -1,29 +1,7 @@
 {
-  "generated_at": "2026-06-27T21:38:07.315854Z",
+  "generated_at": "2026-06-27T23:02:43.576861Z",
   "total": 72,
   "fixtures": [
-    {
-      "id": 1489420,
-      "date": "2026-06-27T21:00:00+00:00",
-      "status": "1H",
-      "round": "Group Stage - 3",
-      "group": "Group L",
-      "home": "Croatia",
-      "away": "Ghana",
-      "goalsH": 1,
-      "goalsA": 0
-    },
-    {
-      "id": 1489422,
-      "date": "2026-06-27T21:00:00+00:00",
-      "status": "1H",
-      "round": "Group Stage - 3",
-      "group": "Group L",
-      "home": "Panama",
-      "away": "England",
-      "goalsH": 0,
-      "goalsA": 0
-    },
     {
       "id": 1489369,
       "date": "2026-06-11T19:00:00+00:00",
@@ -749,6 +727,28 @@
       "away": "Belgium",
       "goalsH": 1,
       "goalsA": 5
+    },
+    {
+      "id": 1489420,
+      "date": "2026-06-27T21:00:00+00:00",
+      "status": "FT",
+      "round": "Group Stage - 3",
+      "group": "Group L",
+      "home": "Croatia",
+      "away": "Ghana",
+      "goalsH": 2,
+      "goalsA": 1
+    },
+    {
+      "id": 1489422,
+      "date": "2026-06-27T21:00:00+00:00",
+      "status": "FT",
+      "round": "Group Stage - 3",
+      "group": "Group L",
+      "home": "Panama",
+      "away": "England",
+      "goalsH": 0,
+      "goalsA": 2
     },
     {
       "id": 1489419,
