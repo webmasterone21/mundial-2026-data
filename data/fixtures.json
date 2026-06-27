@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-26T23:06:13.216872Z",
+  "generated_at": "2026-06-27T01:28:24.211100Z",
   "total": 72,
   "fixtures": [
     {
@@ -685,28 +685,6 @@
       "goalsA": 4
     },
     {
-      "id": 1489417,
-      "date": "2026-06-27T00:00:00+00:00",
-      "status": "NS",
-      "round": "Group Stage - 3",
-      "group": "Group H",
-      "home": "Uruguay",
-      "away": "Spain",
-      "goalsH": null,
-      "goalsA": null
-    },
-    {
-      "id": 1489413,
-      "date": "2026-06-27T00:00:00+00:00",
-      "status": "NS",
-      "round": "Group Stage - 3",
-      "group": "Group H",
-      "home": "Cape Verde Islands",
-      "away": "Saudi Arabia",
-      "goalsH": null,
-      "goalsA": null
-    },
-    {
       "id": 1489414,
       "date": "2026-06-27T03:00:00+00:00",
       "status": "NS",
@@ -793,6 +771,28 @@
       "away": "Argentina",
       "goalsH": null,
       "goalsA": null
+    },
+    {
+      "id": 1489417,
+      "date": "2026-06-27T00:00:00+00:00",
+      "status": "2H",
+      "round": "Group Stage - 3",
+      "group": "Group H",
+      "home": "Uruguay",
+      "away": "Spain",
+      "goalsH": 0,
+      "goalsA": 1
+    },
+    {
+      "id": 1489413,
+      "date": "2026-06-27T00:00:00+00:00",
+      "status": "2H",
+      "round": "Group Stage - 3",
+      "group": "Group H",
+      "home": "Cape Verde Islands",
+      "away": "Saudi Arabia",
+      "goalsH": 0,
+      "goalsA": 0
     }
   ]
 }
