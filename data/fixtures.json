@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-28T01:33:47.562624Z",
+  "generated_at": "2026-06-28T06:18:27.566325Z",
   "total": 72,
   "fixtures": [
     {
@@ -775,24 +775,24 @@
     {
       "id": 1489418,
       "date": "2026-06-28T02:00:00+00:00",
-      "status": "NS",
+      "status": "FT",
       "round": "Group Stage - 3",
       "group": "Group J",
       "home": "Algeria",
       "away": "Austria",
-      "goalsH": null,
-      "goalsA": null
+      "goalsH": 3,
+      "goalsA": 3
     },
     {
       "id": 1489421,
       "date": "2026-06-28T02:00:00+00:00",
-      "status": "NS",
+      "status": "FT",
       "round": "Group Stage - 3",
       "group": "Group J",
       "home": "Jordan",
       "away": "Argentina",
-      "goalsH": null,
-      "goalsA": null
+      "goalsH": 1,
+      "goalsA": 3
     }
   ]
 }
