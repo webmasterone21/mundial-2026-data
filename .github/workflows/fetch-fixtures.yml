@@ -1,0 +1,211 @@
+name: Fetch Mundial 2026 Fixtures
+
+on:
+  schedule:
+    # Cada 15 minutos — 1 sola call por ejecución = 96 calls/día (dentro del límite Free de 100)
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v5
+
+      - name: Fetch fixtures desde API-Football
+        env:
+          API_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+        run: |
+          if [ -z "$API_KEY" ]; then
+            echo "ERROR: API_FOOTBALL_KEY secret no configurado"
+            exit 1
+          fi
+
+          # UNA sola call — fixtures trae los 104 partidos (grupos + llaves)
+          # Esto reemplaza la llamada a /standings que no incluía partidos de eliminatorias
+          curl -s \
+            -H "x-apisports-key: $API_KEY" \
+            "https://v3.football.api-sports.io/fixtures?league=1&season=2026" \
+            -o data/fixtures_raw.json
+
+          # Verificar JSON válido
+          if ! python3 -c "import json; json.load(open('data/fixtures_raw.json'))" 2>/dev/null; then
+            echo "ERROR: respuesta inválida de la API"
+            cat data/fixtures_raw.json
+            exit 1
+          fi
+
+          echo "Fixtures descargados"
+
+      - name: Generar fixtures.json compacto
+        run: |
+          python3 << 'PYEOF'
+import json
+import datetime
+
+# ── Grupos oficiales FIFA 2026 ────────────────────────────────────────────────
+# Fallback indispensable: el endpoint /fixtures de API-Football
+# devuelve el campo league.group vacío ("") para muchos partidos.
+GRUPOS_FIFA = {
+    "Mexico": "Group A",       "South Africa": "Group A",
+    "South Korea": "Group A",  "Czech Republic": "Group A", "Czechia": "Group A",
+    "Canada": "Group B",       "Bosnia & Herzegovina": "Group B",
+    "Bosnia and Herzegovina": "Group B",
+    "Qatar": "Group B",        "Switzerland": "Group B",
+    "Brazil": "Group C",       "Morocco": "Group C",
+    "Scotland": "Group C",     "Haiti": "Group C",
+    "United States": "Group D","USA": "Group D",
+    "Australia": "Group D",    "Paraguay": "Group D",
+    "Turkey": "Group D",       "Türkiye": "Group D",
+    "Germany": "Group E",      "Ivory Coast": "Group E",
+    "Cote d'Ivoire": "Group E","Côte d'Ivoire": "Group E",
+    "Ecuador": "Group E",      "Curaçao": "Group E",
+    "Netherlands": "Group F",  "Japan": "Group F",
+    "Sweden": "Group F",       "Tunisia": "Group F",
+    "Belgium": "Group G",      "Egypt": "Group G",
+    "Iran": "Group G",         "New Zealand": "Group G",
+    "Spain": "Group H",        "Uruguay": "Group H",
+    "Cape Verde": "Group H",   "Cape Verde Islands": "Group H",
+    "Saudi Arabia": "Group H",
+    "France": "Group I",       "Norway": "Group I",
+    "Senegal": "Group I",      "Iraq": "Group I",
+    "Argentina": "Group J",    "Austria": "Group J",
+    "Algeria": "Group J",      "Jordan": "Group J",
+    "Colombia": "Group K",     "Portugal": "Group K",
+    "DR Congo": "Group K",     "Congo DR": "Group K",
+    "Dem. Rep. Congo": "Group K","Uzbekistan": "Group K",
+    "England": "Group L",      "Ghana": "Group L",
+    "Croatia": "Group L",      "Panama": "Group L",
+}
+
+# Rondas de fase de grupos (para incluir el campo group en el JSON)
+GROUP_ROUNDS = {"Group Stage - 1", "Group Stage - 2", "Group Stage - 3"}
+
+# Rondas de eliminatorias (para incluir penH/penA cuando hay penales)
+KNOCKOUT_ROUNDS = {
+    "Round of 32", "Round of 16",
+    "Quarter-finals", "Semi-finals",
+    "3rd Place Final", "Final",
+}
+
+raw = json.load(open("data/fixtures_raw.json"))
+
+# Verificar errores de API
+errors = raw.get("errors", {})
+if errors and errors != [] and errors != {}:
+    raise Exception(f"API error: {errors}")
+
+response = raw.get("response", [])
+if not response:
+    raise Exception("Sin fixtures — posiblemente límite de API agotado o temporada aún no iniciada")
+
+print(f"Total fixtures recibidos: {len(response)}")
+
+output = []
+
+for f in response:
+    status = f["fixture"]["status"]["short"]   # FT, AET, PEN, NS, 1H, 2H…
+    round_ = f["league"].get("round", "")
+    group_ = f["league"].get("group", "") or ""
+    home   = f["teams"]["home"]["name"]
+    away   = f["teams"]["away"]["name"]
+    gh     = f["goals"].get("home")
+    ga     = f["goals"].get("away")
+
+    # Solo partidos terminados con marcador completo
+    if status not in ("FT", "AET", "PEN"):
+        continue
+    if gh is None or ga is None:
+        continue
+
+    is_group    = round_ in GROUP_ROUNDS
+    is_knockout = round_ in KNOCKOUT_ROUNDS
+
+    if not is_group and not is_knockout:
+        continue
+
+    row = {
+        "id":     f["fixture"]["id"],
+        "date":   f["fixture"]["date"],
+        "status": status,
+        "round":  round_,
+        "home":   home,
+        "away":   away,
+        "goalsH": gh,
+        "goalsA": ga,
+    }
+
+    # Campo group (solo fase de grupos)
+    if is_group:
+        grp = group_
+        if not grp or grp == "Group Stage":
+            grp = GRUPOS_FIFA.get(home) or GRUPOS_FIFA.get(away) or ""
+        row["group"] = grp
+
+    # Penales (solo si el partido se definió en penales)
+    if status == "PEN":
+        pen = f.get("score", {}).get("penalty", {})
+        pen_h = pen.get("home")
+        pen_a = pen.get("away")
+        if pen_h is not None and pen_a is not None:
+            row["penH"] = pen_h
+            row["penA"] = pen_a
+
+    output.append(row)
+
+grupos_count   = sum(1 for r in output if "group" in r)
+llaves_count   = sum(1 for r in output if "group" not in r)
+pen_count      = sum(1 for r in output if "penH" in r)
+
+result = {
+    "generated_at":   datetime.datetime.utcnow().isoformat() + "Z",
+    "total":          len(output),
+    "group_matches":  grupos_count,
+    "knockout_matches": llaves_count,
+    "fixtures":       output,
+}
+
+import os
+os.makedirs("data", exist_ok=True)
+with open("data/fixtures.json", "w", encoding="utf-8") as fh:
+    json.dump(result, fh, ensure_ascii=False, separators=(",", ":"))
+
+print(f"fixtures.json → {len(output)} partidos terminados")
+print(f"  Grupos:       {grupos_count}")
+print(f"  Llaves:       {llaves_count}")
+print(f"  Con penales:  {pen_count}")
+
+# Verificar equipos sin grupo en fase de grupos
+sin_grupo = [
+    f"{r['home']} vs {r['away']}"
+    for r in output
+    if r.get("round", "").startswith("Group Stage") and not r.get("group")
+]
+if sin_grupo:
+    print(f"ADVERTENCIA — sin grupo: {sin_grupo}")
+else:
+    print("Todos los partidos de grupos tienen campo group resuelto")
+PYEOF
+
+      - name: Commit y push si hay cambios
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add data/fixtures.json data/fixtures_raw.json
+
+          # Eliminar el archivo viejo de standings si todavía existe
+          if [ -f data/standings_raw.json ]; then
+            git rm --cached data/standings_raw.json 2>/dev/null || true
+            rm -f data/standings_raw.json
+          fi
+
+          if git diff --staged --quiet; then
+            echo "Sin cambios — nada que commitear."
+          else
+            TIMESTAMP=$(date -u '+%Y-%m-%d %H:%M UTC')
+            git commit -m "data: fixtures actualizados $TIMESTAMP"
+            git push
+          fi
