@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-11T22:13:22.426908Z",
+  "generated_at": "2026-07-11T23:25:25.838154Z",
   "total": 101,
   "fixtures": [
     {
       "id": 1581037,
       "date": "2026-07-11T21:00:00+00:00",
-      "status": "2H",
+      "status": "ET",
       "round": "Quarter-finals",
       "group": "",
       "home": "Norway",
       "away": "England",
       "goalsH": 1,
-      "goalsA": 1,
+      "goalsA": 2,
       "penH": null,
       "penA": null
     },
