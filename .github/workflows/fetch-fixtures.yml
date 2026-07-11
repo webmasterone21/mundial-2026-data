@@ -1,0 +1,117 @@
+name: Fetch Mundial 2026 Fixtures
+
+on:
+  schedule:
+    # Cada 30 minutos — solo durante la fase de grupos (11 Jun – 2 Jul 2026)
+    - cron: '*/30 * * * *'
+  workflow_dispatch:   # permite ejecutar manualmente desde GitHub
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Fetch fixtures desde API-Football
+        env:
+          API_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+        run: |
+          # Verificar que la API key está configurada
+          if [ -z "$API_KEY" ]; then
+            echo "ERROR: API_FOOTBALL_KEY secret no configurado"
+            exit 1
+          fi
+
+          # Llamada a API-Football
+          curl -s \
+            -H "x-apisports-key: $API_KEY" \
+            "https://v3.football.api-sports.io/fixtures?league=1&season=2026" \
+            -o data/fixtures_raw.json
+
+          # Verificar que la respuesta es JSON válido
+          if ! python3 -c "import json,sys; json.load(open('data/fixtures_raw.json'))" 2>/dev/null; then
+            echo "ERROR: La API devolvió una respuesta inválida"
+            cat data/fixtures_raw.json
+            exit 1
+          fi
+
+          # Verificar que no es un error de la API (requests agotados, etc.)
+          ERRORS=$(python3 -c "
+          import json
+          d = json.load(open('data/fixtures_raw.json'))
+          errs = d.get('errors', {})
+          if isinstance(errs, dict) and errs:
+              print(list(errs.values())[0])
+          elif isinstance(errs, str) and errs:
+              print(errs)
+          ")
+          if [ -n "$ERRORS" ]; then
+            echo "ERROR API-Football: $ERRORS"
+            exit 1
+          fi
+
+          echo "✓ Fixtures descargados correctamente"
+
+      - name: Procesar y limpiar JSON
+        run: |
+          python3 << 'EOF'
+          import json, datetime
+
+          raw = json.load(open('data/fixtures_raw.json'))
+          fixtures = raw.get('response', [])
+
+          # Fase de grupos Y eliminatorias — antes esto descartaba
+          # Round of 32/16, Cuartos, Semis y Final por completo.
+          def keep(f):
+              r = (f.get('league', {}).get('round') or '')
+              return ('Group Stage' in r) or any(k in r for k in
+                  ('Round of', 'Quarter', 'Semi', 'Final'))
+
+          wanted = [f for f in fixtures if keep(f)]
+
+          # Estructura compacta — solo los campos que necesita el widget
+          compacto = []
+          for f in wanted:
+              penalty = (f.get('score') or {}).get('penalty') or {}
+              compacto.append({
+                  'id':     f['fixture']['id'],
+                  'date':   f['fixture']['date'],
+                  'status': f['fixture']['status']['short'],
+                  'round':  f['league']['round'],
+                  'group':  f['league'].get('group', ''),
+                  'home':   f['teams']['home']['name'],
+                  'away':   f['teams']['away']['name'],
+                  'goalsH': f['goals']['home'],
+                  'goalsA': f['goals']['away'],
+                  'penH':   penalty.get('home'),
+                  'penA':   penalty.get('away'),
+              })
+
+          output = {
+              'generated_at': datetime.datetime.utcnow().isoformat() + 'Z',
+              'total': len(compacto),
+              'fixtures': compacto,
+          }
+
+          json.dump(output, open('data/fixtures.json', 'w'), ensure_ascii=False, indent=2)
+          n_ko = sum(1 for c in compacto if 'Group' not in c['round'])
+          print(f"✓ {len(compacto)} partidos procesados ({n_ko} de eliminatorias)")
+          EOF
+
+      - name: Commit y push si hay cambios
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add data/fixtures.json data/fixtures_raw.json
+
+          # Solo commitear si algo cambió (evita commits vacíos)
+          if git diff --staged --quiet; then
+            echo "Sin cambios en los datos, nada que commitear."
+          else
+            TIMESTAMP=$(date -u '+%Y-%m-%d %H:%M UTC')
+            git commit -m "data: fixtures actualizados $TIMESTAMP"
+            git push
+          fi
