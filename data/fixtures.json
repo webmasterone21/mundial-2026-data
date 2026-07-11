@@ -1,7 +1,20 @@
 {
-  "generated_at": "2026-07-11T20:07:56.863601Z",
+  "generated_at": "2026-07-11T21:21:13.386602Z",
   "total": 101,
   "fixtures": [
+    {
+      "id": 1581037,
+      "date": "2026-07-11T21:00:00+00:00",
+      "status": "1H",
+      "round": "Quarter-finals",
+      "group": "",
+      "home": "Norway",
+      "away": "England",
+      "goalsH": 0,
+      "goalsA": 0,
+      "penH": null,
+      "penA": null
+    },
     {
       "id": 1489369,
       "date": "2026-06-11T19:00:00+00:00",
@@ -1273,19 +1286,6 @@
       "away": "Belgium",
       "goalsH": 2,
       "goalsA": 1,
-      "penH": null,
-      "penA": null
-    },
-    {
-      "id": 1581037,
-      "date": "2026-07-11T21:00:00+00:00",
-      "status": "NS",
-      "round": "Quarter-finals",
-      "group": "",
-      "home": "Norway",
-      "away": "England",
-      "goalsH": null,
-      "goalsA": null,
       "penH": null,
       "penA": null
     },
