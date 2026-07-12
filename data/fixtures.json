@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-11T23:25:25.838154Z",
+  "generated_at": "2026-07-12T01:03:43.017344Z",
   "total": 101,
   "fixtures": [
     {
-      "id": 1581037,
-      "date": "2026-07-11T21:00:00+00:00",
-      "status": "ET",
+      "id": 1582681,
+      "date": "2026-07-12T01:00:00+00:00",
+      "status": "1H",
       "round": "Quarter-finals",
       "group": "",
-      "home": "Norway",
-      "away": "England",
-      "goalsH": 1,
-      "goalsA": 2,
+      "home": "Argentina",
+      "away": "Switzerland",
+      "goalsH": 0,
+      "goalsA": 0,
       "penH": null,
       "penA": null
     },
@@ -1290,15 +1290,15 @@
       "penA": null
     },
     {
-      "id": 1582681,
-      "date": "2026-07-12T01:00:00+00:00",
-      "status": "NS",
+      "id": 1581037,
+      "date": "2026-07-11T21:00:00+00:00",
+      "status": "AET",
       "round": "Quarter-finals",
       "group": "",
-      "home": "Argentina",
-      "away": "Switzerland",
-      "goalsH": null,
-      "goalsA": null,
+      "home": "Norway",
+      "away": "England",
+      "goalsH": 1,
+      "goalsA": 2,
       "penH": null,
       "penA": null
     },
