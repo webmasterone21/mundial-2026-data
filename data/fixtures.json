@@ -1,7 +1,20 @@
 {
-  "generated_at": "2026-07-15T17:46:06.978375Z",
+  "generated_at": "2026-07-15T19:06:18.960381Z",
   "total": 102,
   "fixtures": [
+    {
+      "id": 1586077,
+      "date": "2026-07-15T19:00:00+00:00",
+      "status": "1H",
+      "round": "Semi-finals",
+      "group": "",
+      "home": "England",
+      "away": "Argentina",
+      "goalsH": 0,
+      "goalsA": 0,
+      "penH": null,
+      "penA": null
+    },
     {
       "id": 1489369,
       "date": "2026-06-11T19:00:00+00:00",
@@ -1312,19 +1325,6 @@
       "away": "Spain",
       "goalsH": 0,
       "goalsA": 2,
-      "penH": null,
-      "penA": null
-    },
-    {
-      "id": 1586077,
-      "date": "2026-07-15T19:00:00+00:00",
-      "status": "NS",
-      "round": "Semi-finals",
-      "group": "",
-      "home": "England",
-      "away": "Argentina",
-      "goalsH": null,
-      "goalsA": null,
       "penH": null,
       "penA": null
     }
