@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-07-18T21:13:58.805840Z",
+  "generated_at": "2026-07-18T22:13:47.028232Z",
   "total": 104,
   "fixtures": [
     {
       "id": 1591865,
       "date": "2026-07-18T21:00:00+00:00",
-      "status": "1H",
+      "status": "2H",
       "round": "3rd Place Final",
       "group": "",
       "home": "France",
       "away": "England",
-      "goalsH": 0,
-      "goalsA": 1,
+      "goalsH": 1,
+      "goalsA": 4,
       "penH": null,
       "penA": null
     },
