@@ -1,20 +1,7 @@
 {
-  "generated_at": "2026-07-18T22:13:47.028232Z",
+  "generated_at": "2026-07-18T23:24:52.740285Z",
   "total": 104,
   "fixtures": [
-    {
-      "id": 1591865,
-      "date": "2026-07-18T21:00:00+00:00",
-      "status": "2H",
-      "round": "3rd Place Final",
-      "group": "",
-      "home": "France",
-      "away": "England",
-      "goalsH": 1,
-      "goalsA": 4,
-      "penH": null,
-      "penA": null
-    },
     {
       "id": 1489369,
       "date": "2026-06-11T19:00:00+00:00",
@@ -1338,6 +1325,19 @@
       "away": "Argentina",
       "goalsH": 1,
       "goalsA": 2,
+      "penH": null,
+      "penA": null
+    },
+    {
+      "id": 1591865,
+      "date": "2026-07-18T21:00:00+00:00",
+      "status": "FT",
+      "round": "3rd Place Final",
+      "group": "",
+      "home": "France",
+      "away": "England",
+      "goalsH": 4,
+      "goalsA": 6,
       "penH": null,
       "penA": null
     },
